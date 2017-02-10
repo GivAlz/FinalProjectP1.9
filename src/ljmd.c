@@ -11,12 +11,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "prototypes.h"
-//#include "input.h"
-#include "utilities.h"
-#include "force.h"
-#include "output.h"
-#include "verlet1.h"
+#include "ljmd.h"
+
 
 #define BLEN 200
 
@@ -24,23 +20,20 @@
 const double kboltz=0.0019872067;     /* boltzman constant in kcal/mol/K */
 const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 
-int read_from_py(int atoms, double mass, double epsilon,
+int read_from_py(int atoms, double mass, double rcut, double box, double epsilon,
    double sigma, char * restfile, char * trajfile, char * ergfile,
-   char * line, int nsteps, int dt)
+   int nsteps, double dt, mdsys_t * sys)
 {
   FILE *fp;
   int i;
+
     /* read input file */
-    sys->natoms=fp_atoms;
-    sys->mass=fp_mass;
+    sys->natoms=atoms;
+    sys->mass=mass;
     sys->epsilon=epsilon;
     sys->sigma=sigma;
-    sys->rcut=atof(line);
-    sys->box=atof(line);
-    //if(get_a_line(stdin,restfile)) return 1;
-    //if(get_a_line(stdin,trajfile)) return 1;
-    //if(get_a_line(stdin,ergfile)) return 1;
-    //if(get_a_line(stdin,line)) return 1;
+    sys->rcut=rcut;
+    sys->box=box;
     sys->nsteps=nsteps;
     sys->dt=dt;
     //*nprint=atoi(line);
@@ -79,18 +72,18 @@ int read_from_py(int atoms, double mass, double epsilon,
 }
 
 
-int compute_ljmd(int atoms, double mass, double epsilon,
-   double sigma, char * restfile, char * trajfile, char * ergfile,
-   char * line, int nsteps, int dt)
+int compute_ljmd(int atoms, double mass, double rcut,  double box, double epsilon,
+   double sigma, char restfile[BLEN], char trajfile[BLEN], char ergfile[BLEN], int nsteps, double dt, int nprint)
 {
 
-    int nprint;
-    char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
+
     FILE *traj,*erg;
     mdsys_t sys;
 
-    read_from_py(atoms, mass, epsilon, sigma, restfile, trajfile, ergfile,
-       line, nsteps, dt);
+
+    read_from_py(atoms, mass, rcut, box, epsilon, sigma, restfile, trajfile, ergfile,
+       nsteps, dt, &sys);
+
 
     /* initialize forces and energies.*/
     sys.nfi=0;
