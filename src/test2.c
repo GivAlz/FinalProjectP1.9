@@ -102,7 +102,6 @@ int main(int argc, char const *argv[]) {
 
 int main(int argc, char **argv) {
 
-	print_test();
 	//const double result1=4773900.57392699;
 	//const double result2=11648317.4003819;
 	const double result=27986992.114647;

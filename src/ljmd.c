@@ -35,22 +35,23 @@ int main(int argc, char **argv)
     FILE *traj,*erg;
     mdsys_t sys;
 
-    read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+
     
 	#ifdef __MPI_H__
 	int rank, nprocs;
 	MPI_Init( &argc, &argv );
 	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
-	#endif
 
-
-
-
-	#ifdef __MPI_H__
 	//This function sets the values needed for splitting the array
 	temp_t tmp;
 	set_mpi(&sys,&tmp,rank,nprocs);
+	
+	if(rank==0)
+	{
+		read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+	}
+	
 	#endif
     /* initialize forces and energies.*/
     sys.nfi=0;
