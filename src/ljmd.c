@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     FILE *traj,*erg;
     mdsys_t sys;
 
-    read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+
     
 	#ifdef __MPI_H__
 	int rank, nprocs;
@@ -44,6 +44,10 @@ int main(int argc, char **argv)
 	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
 	#endif
 
+	if(rank==0)
+	{
+		read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+	}
 
 
 
