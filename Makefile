@@ -1,6 +1,6 @@
-CC=gcc
-#CC=mpicc
-CFLAGS=-I. -Wall -fPIC -fopenmp -O3 -march=native#-D__MPI_H__#-pg for profiling, for optimization -O3 -march=native
+#CC=gcc
+CC=mpicc
+CFLAGS=-I. -Wall -fPIC -fopenmp -O3 -march=native -pg -D__MPI_H__#-pg for profiling, for optimization -O3 -march=native
 LDFLAGS=-lm -fopenmp
 DEPS=$(wildcard src/*.h)
 #SRCS=$(wildcard src/*.c)
