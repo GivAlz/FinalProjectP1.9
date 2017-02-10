@@ -10,7 +10,7 @@
 
 
 int tollerance(double a, double b){
-  if(abs(a-b) < 1e-12)
+  if(fabs(a-b) < 1e-12)
     return 1;
   return 0;
 }
