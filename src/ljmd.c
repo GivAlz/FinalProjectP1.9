@@ -39,11 +39,6 @@ int main(int argc, char **argv)
 	read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
 	#endif
 
-	#ifdef _OPENMP
-	#pragma omp single
-	read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
-	#endif
-
     
 	#ifdef __MPI_H__
 	int rank, nprocs;
@@ -104,8 +99,6 @@ int main(int argc, char **argv)
     #endif
     
     #ifdef __MPI_H__
-	if(rank==0)
-	{
     force(&sys,&tmp);
     #endif
     ekin(&sys);
