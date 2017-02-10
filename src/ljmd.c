@@ -62,37 +62,37 @@ int main(int argc, char **argv)
 	}
 	//Using MPI to Broadcast a structure is a nightmare
 	//This is easier:
-	MPI_Bcast(sys->natoms,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(sys->mass,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-	MPI_Bcast(sys->epsilon,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-	MPI_Bcast(sys->sigma,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-	MPI_Bcast(sys->rcut,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-	MPI_Bcast(sys->box,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->nsteps,1,MPI_INT,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->dt,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.natoms,1,MPI_INT,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.mass,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.epsilon,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.sigma,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.rcut,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	MPI_Bcast(&sys.box,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(&sys.nsteps,1,MPI_INT,0,MPI_COMM_WORLD);
+    MPI_Bcast(&sys.dt,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
     
     /* allocate memory */
-    sys->rx=(double *)malloc(sys->natoms*sizeof(double));
-    sys->ry=(double *)malloc(sys->natoms*sizeof(double));
-    sys->rz=(double *)malloc(sys->natoms*sizeof(double));
-    sys->vx=(double *)malloc(sys->natoms*sizeof(double));
-    sys->vy=(double *)malloc(sys->natoms*sizeof(double));
-    sys->vz=(double *)malloc(sys->natoms*sizeof(double));
-    sys->fx=(double *)malloc(sys->natoms*sizeof(double));
-    sys->fy=(double *)malloc(sys->natoms*sizeof(double));
-    sys->fz=(double *)malloc(sys->natoms*sizeof(double));
+    sys.rx=(double *)malloc(sys.natoms*sizeof(double));
+    sys.ry=(double *)malloc(sys.natoms*sizeof(double));
+    sys.rz=(double *)malloc(sys.natoms*sizeof(double));
+    sys.vx=(double *)malloc(sys.natoms*sizeof(double));
+    sys.vy=(double *)malloc(sys.natoms*sizeof(double));
+    sys.vz=(double *)malloc(sys.natoms*sizeof(double));
+    sys.fx=(double *)malloc(sys.natoms*sizeof(double));
+    sys.fy=(double *)malloc(sys.natoms*sizeof(double));
+    sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 	
-    azzero(sys->fx, sys->natoms);
-    azzero(sys->fy, sys->natoms);
-    azzero(sys->fz, sys->natoms);
+    azzero(sys.fx, sys.natoms);
+    azzero(sys.fy, sys.natoms);
+    azzero(sys.fz, sys.natoms);
 
-    MPI_Bcast(sys->rx,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->ry,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->rz,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.rx,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.ry,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.rz,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
-    MPI_Bcast(sys->vx,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->vy,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
-    MPI_Bcast(sys->vz,sys->natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.vx,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.vy,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
+    MPI_Bcast(sys.vz,sys.natoms,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
 	#endif
 	
@@ -104,6 +104,8 @@ int main(int argc, char **argv)
     #endif
     
     #ifdef __MPI_H__
+	if(rank==0)
+	{
     force(&sys,&tmp);
     #endif
     ekin(&sys);
