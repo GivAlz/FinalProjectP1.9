@@ -14,7 +14,7 @@ def read_file(inputfile):
     c_natoms = c_int(int(natoms))
     c_nstep = c_int(int(float(nstep)))
     c_dt = c_int(int(dt))
-    c_line = c_int(int(line))
+    #c_line = c_int(int(line))
 
     c_mass = c_double(float(mass))
     c_epsilon = c_double(float(epsilon))
@@ -26,13 +26,21 @@ def read_file(inputfile):
     c_trajfile = c_char_p(trajfile)
     c_ergfile = c_char_p(ergfile)
 
+    #dso.read_from_py.arg = [c_char_p]
+    #dso.read_from_py(c_natoms, c)
 
-    #dso.mklkop(c_)
+    #dso.compute_ljmd(c_natoms, c_mass, c_epsilon, c_sigma, c_restfile, c_trajfile,\
+    #c_ergfile, c_nstep, c_dt)
 
-    return lines
+    out = [c_natoms, c_mass, c_epsilon, c_sigma, c_restfile, c_trajfile,\
+    c_ergfile, c_nstep, c_dt]
+
+    return out
 
 
 if __name__ == "__main__":
 
     if(len(sys.argv)>1):
         print read_file(sys.argv[-1])
+        read_file(sys.argv[-1])
+        #return
