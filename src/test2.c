@@ -1,4 +1,3 @@
-#include "test2.h"
 #include "force.h"
 #include <math.h>
 
@@ -56,7 +55,7 @@ void test_kinetic()
     force(&sys);
     ekin(&sys);
 
-    if(abs(sys.ekin-result)<1e-12)
+    if(fabs(sys.ekin-result)<1e-12)
         printf("Kinetic energy test: OK\n");
     else{
         printf("Kinetic energy test: FAILED\n");
