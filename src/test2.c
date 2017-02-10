@@ -1,5 +1,11 @@
-#include "test2.h"
+#include "prototypes.h"
+#include "utilities.h"
 #include "force.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include <math.h>
 
 
@@ -7,6 +13,7 @@
 
 void test_kinetic()
 {
+	
 	//const double result1=4773900.57392699;
 	//const double result2=11648317.4003819;
 	const double result=27986992.114647;
@@ -85,14 +92,17 @@ int main(int argc, char const *argv[]) {
   return 0;
 }
 
+
 #endif
 
+
+
 #ifdef __MPI_H__
+#include <mpi.h>
 
+int main(int argc, char **argv) {
 
-int main(int argc, char const *argv[]) {
-
-	
+	print_test();
 	//const double result1=4773900.57392699;
 	//const double result2=11648317.4003819;
 	const double result=27986992.114647;
@@ -103,8 +113,7 @@ int main(int argc, char const *argv[]) {
 	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
 	temp_t tmp;
 	set_mpi(&sys,&tmp,rank,nprocs);
-	
-    /* read input file */
+    ///* read input file */
     sys.natoms=3;
     sys.mass=39.948;
     sys.epsilon=0.2379;
@@ -126,7 +135,7 @@ int main(int argc, char const *argv[]) {
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
 
-	//Setting everything to 0
+	////Setting everything to 0
     azzero(sys.rx, sys.natoms);
     azzero(sys.ry, sys.natoms);
     azzero(sys.rz, sys.natoms);
@@ -148,7 +157,7 @@ int main(int argc, char const *argv[]) {
     sys.vx[1]=-10.0;
     sys.vx[2]=18.5;
 
-    force(&sys);
+    force(&sys,&tmp);
     ekin(&sys);
 
     if(abs(sys.ekin-result)<1e-12)
@@ -158,6 +167,11 @@ int main(int argc, char const *argv[]) {
         printf("%f \n%f\n",sys.ekin,result);
 	}
 
+	free(tmp.tmpx);
+	free(tmp.tmpy);
+	free(tmp.tmpz);
+    
+	MPI_Finalize();
     free(sys.rx);
     free(sys.ry);
     free(sys.rz);
@@ -167,11 +181,6 @@ int main(int argc, char const *argv[]) {
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
-	free(tmp.tmpx);
-	free(tmp.tmpy);
-	free(tmp.tmpz);
-    
-	MPI_Finalize();
     return 0;
 }
 #endif

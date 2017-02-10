@@ -1,5 +1,3 @@
-#include "test1.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -84,9 +82,6 @@ void test_force_and_potential(){
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
-	#ifdef __MPI_H__
-	MPI_Finalize();
-	#endif
 }
 
 
@@ -115,7 +110,7 @@ int main(int argc, char **argv) {
 	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
 	temp_t tmp;
 	set_mpi(&sys,&tmp,rank,nprocs);
-    /* read input file */
+    ///* read input file */
     sys.natoms=2;
     sys.mass=39.948;
     sys.epsilon=0.2379;
@@ -148,29 +143,31 @@ int main(int argc, char **argv) {
 
     sys.vx[0] = 10.0;
     sys.vx[1] = 5.0;
-
-    #ifndef __MPI_H__
-    force(&sys);
-    #endif
     
     #ifdef __MPI_H__
     force(&sys,&tmp);
     #endif
 
 
-    /* For a two particles system, the forces must be equal and opposite */
+    ///* For a two particles system, the forces must be equal and opposite */
     if(tollerance(sys.fx[0], -sys.fx[1]))
       printf("Equal and opposite force test: OK \n");
     else
       printf("Equal and opposite force test: FAILED \n");
 
 
-    /* At r = sigma the potential energy must be zero */
+    ///* At r = sigma the potential energy must be zero */
     if(tollerance(sys.epot,0))
       printf("Zero potential energy test: OK \n");
     else
       printf("Zero potential energy test: FAILED \n");
 
+	free(tmp.tmpx);
+	free(tmp.tmpy);
+	free(tmp.tmpz);
+
+    
+	MPI_Finalize();
 
     free(sys.rx);
     free(sys.ry);
@@ -182,8 +179,6 @@ int main(int argc, char **argv) {
     free(sys.fy);
     free(sys.fz);
     
-	MPI_Finalize();
-
     return 0;
 }
 #endif
