@@ -1,7 +1,7 @@
 from ctypes import *
 import os, sys
 
-dso = CDLL('../src/ljmd.so')
+dso = CDLL('../ljmd.so')
 
 
 def read_file(inputfile):
