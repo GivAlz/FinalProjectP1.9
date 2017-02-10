@@ -46,6 +46,11 @@ void force(mdsys_t *sys)
 	const double rcsq = sys->rcut * sys->rcut;
 	double rsq,rinv,r6;
 	
+	#ifdef _OPENMP
+	double epot=0.0;
+	#pragma omp parallel for private(i,j,rx,ry,rz,rsq,rinv,r6,ffac) shared(sys) reduction(+:epot)
+	#endif
+	
     for(i=0; i < (sys->natoms)-1; ++i) {
         for(j=i+1; j < (sys->natoms); ++j) {
 
@@ -75,7 +80,13 @@ void force(mdsys_t *sys)
 				r6 = rinv*rinv*rinv;
 				
 				ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
+				#ifndef _OPENMP
 				sys->epot += r6*(c12*r6 - c6);
+				#endif
+				
+				#ifdef _OPENMP
+				epot += r6*(c12*r6 - c6);
+				#endif
 				
                 sys->fx[i] += rx*ffac;
                 sys->fx[j] -= rx*ffac;
@@ -88,4 +99,7 @@ void force(mdsys_t *sys)
             }
         }
     }
+    #ifdef _OPENMP
+	sys->epot = epot;
+	#endif
 }

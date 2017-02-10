@@ -1,12 +1,12 @@
 CC=gcc
-CFLAGS=-I. -Wall -fPIC #-pg for profiling, for optimization -O3 -march=native
-LDFLAGS=-lm
+CFLAGS=-I. -Wall -fPIC -fopenmp -O3 -march=native #-pg for profiling, for optimization -O3 -march=native
+LDFLAGS=-lm -shared -fopenmp
 DEPS=$(wildcard src/*.h)
 #SRCS=$(wildcard src/*.c)
-SRCS=src/force.c src/ljmd.c src/output.c src/utilities.c src/verlet1.c src/verlet2.c src/input.c
+SRCS=src/force.c src/ljmd.c src/output.c src/utilities.c src/verlet1.c src/verlet2.c #With python it is not needed: src/input.c
 #OBJS=$(SRCS:src/.c=Obj-serial/.o)
 
-TEST_SRC=src/test1.c src/tes2.c
+TEST_SRC=src/test1.c src/test2.c
 TEST_O = ($TEST_SRC:.c=.o)
 TEST_EXE = $(TEST_SRC:.c=.x)
 
@@ -15,7 +15,7 @@ TEST_EXE = $(TEST_SRC:.c=.x)
 
 
 OBJS=$(SRCS:.c=.o)
-TARGET=ljmd_serial
+TARGET=ljmd.so
 
 
 all: info $(TARGET)

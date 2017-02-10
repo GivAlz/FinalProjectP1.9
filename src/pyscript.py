@@ -1,6 +1,7 @@
 from ctypes import *
 import os, sys
 
+
 dso = CDLL('../src/ljmd.so')
 
 
@@ -23,9 +24,9 @@ def read_file(inputfile):
     c_rcut = c_double(float(rcut))
     c_box = c_double(float(box))
 
-    c_restfile = c_char_p(restfile)
-    c_trajfile = c_char_p(trajfile)
-    c_ergfile = c_char_p(ergfile)
+    c_restfile = c_char_p(restfile.encode())
+    c_trajfile = c_char_p(trajfile.encode())
+    c_ergfile = c_char_p(ergfile.encode())
 
     dso.compute_ljmd(c_natoms, c_mass, c_rcut, c_box, c_epsilon, c_sigma, c_restfile, c_trajfile,\
     c_ergfile, c_nstep, c_dt, c_nprint)
