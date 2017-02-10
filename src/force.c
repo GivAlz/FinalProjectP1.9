@@ -52,7 +52,7 @@ void force(mdsys_t *sys)
 	double rsq,rinv,r6;
 
 	#ifdef _OPENMP
-	double epot=0;
+	double epot=0.0;
 	#pragma omp parallel for private(i,j,rx,ry,rz,rsq,rinv,r6,ffac) shared(sys) reduction(+:epot)
 	#endif
 
@@ -90,7 +90,7 @@ void force(mdsys_t *sys)
 				#endif
 				
 				#ifdef _OPENMP
-				epot = r6*(c12*r6 - c6);
+				epot += r6*(c12*r6 - c6);
 				#endif
                 sys->fx[i] += rx*ffac;
                 sys->fx[j] -= rx*ffac;
