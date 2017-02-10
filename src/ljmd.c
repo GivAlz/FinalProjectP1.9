@@ -54,7 +54,13 @@ int main(int argc, char **argv)
 	#endif
     /* initialize forces and energies.*/
     sys.nfi=0;
+    #ifndef __MPI_H__
     force(&sys);
+    #endif
+    
+    #ifdef __MPI_H__
+    force(&sys,&tmp);
+    #endif
     ekin(&sys);
 
     erg=fopen(ergfile,"w");
@@ -73,7 +79,12 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
+		#ifndef __MPI_H__
         velverlet(&sys);
+        #endif
+		#ifdef __MPI_H__
+		velverlet(&sys,&tmp);
+		#endif
         ekin(&sys);
     }
     /**************************************************/
@@ -92,8 +103,12 @@ int main(int argc, char **argv)
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
+	
 
 	#ifdef __MPI_H__
+	free(tmp.tmpx);
+	free(tmp.tmpy);
+	free(tmp.tmpz);
 	MPI_Finalize();
 	#endif
     return 0;
