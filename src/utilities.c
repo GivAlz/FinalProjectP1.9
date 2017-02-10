@@ -7,3 +7,9 @@ void azzero(double *d, const int n)
         d[i]=0.0;
     }
 }
+
+void set_mpi(mdsys_t* sys,int* rank,int* nprocs)
+{
+	sys->nprocs = nprocs;
+	sys->rank = rank;
+}

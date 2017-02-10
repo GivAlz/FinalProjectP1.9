@@ -18,6 +18,10 @@
 #include "output.h"
 #include "verlet1.h"
 
+#ifdef __MPI_H__
+#include <mpi.h>
+#endif
+
 /* a few physical constants */
 const double kboltz=0.0019872067;     /* boltzman constant in kcal/mol/K */
 const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
@@ -27,6 +31,13 @@ const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 int main(int argc, char **argv)
 {
 
+	#ifdef __MPI_H__
+	int rank, nprocs;
+	MPI_Init( &argc, &argv );
+	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
+	#endif
+
 
     int nprint;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
@@ -35,6 +46,10 @@ int main(int argc, char **argv)
 
     read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
 
+	#ifdef __MPI_H__
+	//This function sets the values needed for splitting the array
+	set_mpi(&sys,&rank,&nprocs);
+	#endif
     /* initialize forces and energies.*/
     sys.nfi=0;
     force(&sys);
@@ -76,5 +91,8 @@ int main(int argc, char **argv)
     free(sys.fy);
     free(sys.fz);
 
+	#ifdef __MPI_H__
+	MPI_Finalize();
+	#endif
     return 0;
 }
