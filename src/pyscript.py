@@ -1,7 +1,6 @@
 from ctypes import *
 import os, sys
 
-
 dso = CDLL('../src/ljmd.so')
 
 

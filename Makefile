@@ -1,12 +1,12 @@
 CC=gcc
-CFLAGS=-I. -Wall -fPIC -fopenmp -O3 -march=native #-pg for profiling, for optimization -O3 -march=native
+CFLAGS=-I. -Wall -fPIC -fopenmp #-O3 -march=native #-pg for profiling, for optimization -O3 -march=native
 LDFLAGS=-lm -shared -fopenmp
 DEPS=$(wildcard src/*.h)
 #SRCS=$(wildcard src/*.c)
 SRCS=src/force.c src/ljmd.c src/output.c src/utilities.c src/verlet1.c src/verlet2.c #With python it is not needed: src/input.c
 #OBJS=$(SRCS:src/.c=Obj-serial/.o)
 
-TEST_SRC=src/test1.c src/test2.c
+TEST_SRC=src/test1.c #src/test2.c
 TEST_O = ($TEST_SRC:.c=.o)
 TEST_EXE = $(TEST_SRC:.c=.x)
 
@@ -59,18 +59,16 @@ $(TARGET).so: $(OBJS)
 test: test_1 test_2
 	@echo "run test_1"
 	@./test_1
-	@echo "run test_2"
-	@./test_2
 
 test_1: src/test1.o $(TARGET).so
-	$(CC) $^ -o $@ -Wl,-rpath,. -lm
+	$(CC) $^ -o $@ -Wl,-rpath,. -lm -fopenmp
 
 src/test_1.o: src/test1.c
-	$(CC) -c $^ -o $@ -I.
+	$(CC) -c $^ -o $@ -I. -fopenmp
 
 
-test_2: src/test2.o $(TARGET).so
-	$(CC) $^ -o $@ -Wl,-rpath,. -lm
+#test_2: src/test2.o $(TARGET).so
+#	$(CC) $^ -o $@ -Wl,-rpath,. -lm -fopenmp
 
-src/test_2.o: src/test2.c
-	$(CC) -c $^ -o $@ -I.
+#src/test_2.o: src/test2.c
+#	$(CC) -c $^ -o $@ -I. -fopenmp
