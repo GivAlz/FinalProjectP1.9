@@ -56,7 +56,7 @@ $(TARGET).so: $(OBJS)
 
 
 
-test: test_1 test_2
+test: test_1
 	@echo "run test_1"
 	@./test_1
 
