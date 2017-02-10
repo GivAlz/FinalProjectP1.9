@@ -16,10 +16,6 @@ struct _mdsys {
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
     
-	#ifdef __MPI_H__
-	//These are values needed to handle parallelization
-	int rank, nprocs, slice,start;
-	#endif
 };
 typedef struct _mdsys mdsys_t;
 
@@ -28,6 +24,7 @@ typedef struct _mdsys mdsys_t;
 
 struct _temp {
 	double *tmpx,*tmpy,*tmpz;
+	int rank, nprocs;//, slice,start;
 };
 typedef struct _temp temp_t;
 

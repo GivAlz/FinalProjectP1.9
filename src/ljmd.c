@@ -42,23 +42,34 @@ int main(int argc, char **argv)
 	MPI_Init( &argc, &argv );
 	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 	MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
-	#endif
-
+	
 	if(rank==0)
 	{
 		read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
 	}
+	#endif
 
 
-
-	#ifdef __MPI_H__
+	
 	//This function sets the values needed for splitting the array
 	temp_t tmp;
 	set_mpi(&sys,&tmp,rank,nprocs);
+	
+	if(rank==0)
+	{
+		read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+	}
+	
 	#endif
     /* initialize forces and energies.*/
     sys.nfi=0;
+    #ifndef __MPI_H__
     force(&sys);
+    #endif
+    
+    #ifdef __MPI_H__
+    force(&sys,&tmp);
+    #endif
     ekin(&sys);
 
     erg=fopen(ergfile,"w");
@@ -77,7 +88,12 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
+		#ifndef __MPI_H__
         velverlet(&sys);
+        #endif
+		#ifdef __MPI_H__
+		velverlet(&sys,&tmp);
+		#endif
         ekin(&sys);
     }
     /**************************************************/
@@ -96,8 +112,12 @@ int main(int argc, char **argv)
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
+	
 
 	#ifdef __MPI_H__
+	free(tmp.tmpx);
+	free(tmp.tmpy);
+	free(tmp.tmpz);
 	MPI_Finalize();
 	#endif
     return 0;

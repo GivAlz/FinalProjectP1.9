@@ -11,6 +11,11 @@
 #include "force.h"
 #include "verlet2.h"
 
+#ifndef __MPI_H__
 void velverlet(mdsys_t *sys);
+#endif
 
+#ifdef __MPI_H__
+void velverlet(mdsys_t *sys,temp_t* tmp);
+#endif
 #endif
