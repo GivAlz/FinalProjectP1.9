@@ -30,7 +30,13 @@ const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 /* main */
 int main(int argc, char **argv)
 {
+    int nprint;
+    char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
+    FILE *traj,*erg;
+    mdsys_t sys;
 
+    read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
+    
 	#ifdef __MPI_H__
 	int rank, nprocs;
 	MPI_Init( &argc, &argv );
@@ -39,16 +45,12 @@ int main(int argc, char **argv)
 	#endif
 
 
-    int nprint;
-    char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
-    FILE *traj,*erg;
-    mdsys_t sys;
 
-    read_input(&sys, &nprint,restfile,trajfile,ergfile,line);
 
 	#ifdef __MPI_H__
 	//This function sets the values needed for splitting the array
-	set_mpi(&sys,&rank,&nprocs);
+	temp_t tmp;
+	set_mpi(&sys,&tmp,rank,nprocs);
 	#endif
     /* initialize forces and energies.*/
     sys.nfi=0;
